@@ -1,4 +1,4 @@
-package edu.icet.ecom.entity;
+package edu.icet.ecom.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,17 +1,19 @@
 package edu.icet.ecom.service.employee;
 
-import edu.icet.ecom.entity.Employee;
+import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
+import edu.icet.ecom.model.dto.response.EmployeeResponse;
+import edu.icet.ecom.model.entity.Employee;
 
 import java.util.List;
 
 public interface EmployeeService {
-    List<Employee> getAllEmployees();
+    List<EmployeeResponse> getAllEmployees();
 
-    Employee getEmployeeById(Long id);
+    EmployeeResponse getEmployeeById(Long id);
 
-    Employee saveEmployee(Employee employee);
+    EmployeeResponse saveEmployee(EmployeeCreationRequest employeeCreationRequest);
 
-    Employee updateEmployee(Long id, Employee employee);
+    EmployeeResponse updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest);
 
     Boolean deleteEmployee(Long id);
 }

@@ -1,6 +1,8 @@
 package edu.icet.ecom.service.employee.impl;
 
-import edu.icet.ecom.entity.Employee;
+import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
+import edu.icet.ecom.model.dto.response.EmployeeResponse;
+import edu.icet.ecom.model.entity.Employee;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import edu.icet.ecom.service.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -15,23 +17,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeResponse> getAllEmployees() {
         return employeeRepository.getAllEmployees();
     }
 
     @Override
-    public Employee getEmployeeById(Long id) {
+    public EmployeeResponse getEmployeeById(Long id) {
         return employeeRepository.getEmployeeById(id);
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) {
-        return employeeRepository.saveEmployee(employee);
+    public EmployeeResponse saveEmployee(EmployeeCreationRequest employeeCreationRequest) {
+        return employeeRepository.saveEmployee(employeeCreationRequest);
     }
 
     @Override
-    public Employee updateEmployee(Long id, Employee employee) {
-        return employeeRepository.updateEmployee(id, employee);
+    public EmployeeResponse updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest) {
+        return employeeRepository.updateEmployee(id, employeeCreationRequest);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package edu.icet.ecom.controller.employee;
 
-import edu.icet.ecom.entity.Employee;
+import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
+import edu.icet.ecom.model.dto.response.EmployeeResponse;
+import edu.icet.ecom.model.entity.Employee;
 import edu.icet.ecom.service.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,26 +17,26 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @GetMapping("/get-all")
-    List<Employee> getAll(){
+    List<EmployeeResponse> getAll(){
         return employeeService.getAllEmployees();
     }
 
     @GetMapping("/get/{id}")
-    Employee getEmployee(@PathVariable Long id){
+    EmployeeResponse getEmployee(@PathVariable Long id){
         return employeeService.getEmployeeById(id);
     }
 
     @PostMapping("/save")
-    Employee saveEmployee(@RequestBody Employee employee){
-        return employeeService.saveEmployee(employee);
+    EmployeeResponse saveEmployee(@RequestBody EmployeeCreationRequest employeeCreationRequest){
+        return employeeService.saveEmployee(employeeCreationRequest);
     }
 
     @PutMapping("/update/{id}")
-    Employee updateEmployee(
+    EmployeeResponse updateEmployee(
             @PathVariable Long id,
-            @RequestBody Employee employee){
+            @RequestBody EmployeeCreationRequest employeeCreationRequest){
 
-        return employeeService.updateEmployee(id, employee);
+        return employeeService.updateEmployee(id, employeeCreationRequest);
     }
 
     @DeleteMapping("/delete/{id}")

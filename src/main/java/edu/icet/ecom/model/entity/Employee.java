@@ -1,11 +1,10 @@
-package edu.icet.ecom.entity;
+package edu.icet.ecom.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "employees")
@@ -22,8 +21,5 @@ public class Employee {
     private String phone;
     private LocalDate joinDate;
     private Boolean isActive;
-
-    @ManyToOne
-    @JoinColumn(name = "department_id")
-    private Department department;
+    private Long departmentId;
 }
