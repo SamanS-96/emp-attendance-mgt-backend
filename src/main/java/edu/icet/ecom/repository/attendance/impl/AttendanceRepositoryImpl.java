@@ -40,6 +40,11 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
         return true;
     }
 
+    @Override
+    public void setEmpStatusForAbsent() {
+        template.update("UPDATE attendance SET status = 'ABSENT' WHERE status IS NULL");
+    }
+
     private Attendance getAttendanceDetails(Long employeeId) {
         return template.queryForObject("SELECT * FROM attendance WHERE employee_id = ?",
                 new BeanPropertyRowMapper<>(Attendance.class),

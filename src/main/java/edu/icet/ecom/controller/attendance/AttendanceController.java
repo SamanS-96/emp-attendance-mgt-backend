@@ -23,4 +23,6 @@ public class AttendanceController {
     Boolean saveCheckOut(@RequestBody CheckOutCreationRequest checkOutCreationRequest){
         return attendanceService.saveCheckOut(checkOutCreationRequest);
     }
+
+
 }

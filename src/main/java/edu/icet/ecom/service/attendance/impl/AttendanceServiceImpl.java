@@ -22,4 +22,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     public Boolean saveCheckOut(CheckOutCreationRequest checkOutCreationRequest) {
         return attendanceRepository.saveCheckOut(checkOutCreationRequest);
     }
+
+    @Override
+    public void setEmpStatusForAbsent() {
+        attendanceRepository.setEmpStatusForAbsent();
+    }
 }

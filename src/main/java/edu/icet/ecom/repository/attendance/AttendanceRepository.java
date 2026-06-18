@@ -7,4 +7,6 @@ public interface AttendanceRepository {
     Boolean saveCheckIn(CheckInCreationRequest checkInCreationRequest);
 
     Boolean saveCheckOut(CheckOutCreationRequest checkOutCreationRequest);
+
+    void setEmpStatusForAbsent();
 }
