@@ -9,4 +9,6 @@ public interface AttendanceRepository {
     Boolean saveCheckOut(CheckOutCreationRequest checkOutCreationRequest);
 
     void setEmpStatusForAbsent();
+
+    void setStatusForHalfday(Long empId);
 }

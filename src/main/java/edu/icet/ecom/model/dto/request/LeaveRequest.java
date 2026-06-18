@@ -3,11 +3,13 @@ package edu.icet.ecom.model.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-public class CheckInCreationRequest {
+public class LeaveRequest {
     private Long employeeId;
-    private LocalDateTime checkInTime;
+    private LocalDate fromDate;
+    private LocalDate toDate;
+    private String reason;
 }

@@ -1,10 +1,10 @@
 package edu.icet.ecom.service.employee.impl;
 
+import edu.icet.ecom.entity.Employee;
+import edu.icet.ecom.entity.User;
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
 import edu.icet.ecom.model.dto.response.DepartmentResponse;
 import edu.icet.ecom.model.dto.response.EmployeeResponse;
-import edu.icet.ecom.entity.Employee;
-import edu.icet.ecom.entity.User;
 import edu.icet.ecom.repository.department.DepartmentRepository;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import edu.icet.ecom.service.employee.EmployeeService;
@@ -12,7 +12,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Repository
@@ -32,7 +31,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
     @Override
     public Boolean saveCheckOut(CheckOutCreationRequest checkOutCreationRequest) {
-        template.update("UPDATE attendance SET check_out_time = ?, working_hours = ? WHERE employee_id = ?",
+        template.update("UPDATE attendance SET check_out_time = ?, working_hours = ? WHERE employee_id = ? AND attendance_date = CURDATE()",
                 checkOutCreationRequest.getCheckOutTime(),
                 Duration.between(getAttendanceDetails(checkOutCreationRequest.getEmployeeId()).getCheckInTime().toLocalTime(), checkOutCreationRequest.getCheckOutTime().toLocalTime()).toMinutes()/60.0,
                 checkOutCreationRequest.getEmployeeId()
@@ -45,8 +44,15 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
         template.update("UPDATE attendance SET status = 'ABSENT' WHERE status IS NULL");
     }
 
+    @Override
+    public void setStatusForHalfday(Long empId) {
+        template.update("UPDATE attendance SET status = 'HALF_DAY' WHERE employee_id = ? AND attendance_date = CURDATE()",
+                empId
+                );
+    }
+
     private Attendance getAttendanceDetails(Long employeeId) {
-        return template.queryForObject("SELECT * FROM attendance WHERE employee_id = ?",
+        return template.queryForObject("SELECT * FROM attendance WHERE employee_id = ? AND attendance_date = CURDATE()",
                 new BeanPropertyRowMapper<>(Attendance.class),
                 employeeId
                 );

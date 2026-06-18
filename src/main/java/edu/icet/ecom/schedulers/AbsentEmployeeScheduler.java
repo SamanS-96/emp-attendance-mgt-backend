@@ -1,6 +1,5 @@
 package edu.icet.ecom.schedulers;
 
-import edu.icet.ecom.repository.attendance.AttendanceRepository;
 import edu.icet.ecom.service.attendance.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +14,5 @@ public class AbsentEmployeeScheduler {
     @Scheduled(cron = "0 0 13 * * *")
     void setEmpStatusForAbsent(){
         attendanceService.setEmpStatusForAbsent();
-        System.out.println("Done");
     }
 }

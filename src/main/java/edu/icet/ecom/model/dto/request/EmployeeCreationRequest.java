@@ -2,10 +2,6 @@ package edu.icet.ecom.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
