@@ -1,8 +1,7 @@
 package edu.icet.ecom.repository.department.impl;
 
 import edu.icet.ecom.model.dto.request.DepartmentCreationRequest;
-import edu.icet.ecom.model.dto.response.DepartmentResponse;
-import edu.icet.ecom.model.entity.Department;
+import edu.icet.ecom.entity.Department;
 import edu.icet.ecom.repository.department.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -24,27 +21,17 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
     private final JdbcTemplate template;
 
     @Override
-    public List<DepartmentResponse> getAllDepartments() {
-        List<Department> departmentList = template.query("SELECT * FROM departments", new BeanPropertyRowMapper<>(Department.class));
-        List<DepartmentResponse> departmentResponseList = new ArrayList<>();
-        departmentList.forEach(department -> {
-            departmentResponseList.add(new DepartmentResponse(
-                    department.getName(),
-                    department.getDescription()));
-        });
-        return departmentResponseList;
+    public List<Department> getAllDepartments() {
+        return template.query("SELECT * FROM departments", new BeanPropertyRowMapper<>(Department.class));
     }
 
     @Override
-    public DepartmentResponse searhDepartmentById(Long departmentId) {
-        Department department = template.queryForObject("SELECT * FROM departments WHERE id = ?", new BeanPropertyRowMapper<>(Department.class), departmentId);
-        return new DepartmentResponse(
-                department.getName(),
-                department.getDescription());
+    public Department searhDepartmentById(Long departmentId) {
+        return template.queryForObject("SELECT * FROM departments WHERE id = ?", new BeanPropertyRowMapper<>(Department.class), departmentId);
     }
 
     @Override
-    public DepartmentResponse saveDepartment(DepartmentCreationRequest departmentCreationRequest) {
+    public Department saveDepartment(DepartmentCreationRequest departmentCreationRequest) {
         String sql = "INSERT INTO departments (name, description)" +
                 "VALUES" +
                 "(?, ?)";
@@ -61,7 +48,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
     }
 
     @Override
-    public DepartmentResponse updateDepartment(Long id, DepartmentCreationRequest departmentCreationRequest) {
+    public Department updateDepartment(Long id, DepartmentCreationRequest departmentCreationRequest) {
         String sql = "UPDATE departments SET name = ?, description = ? WHERE id = ?";
 
         template.update(sql,
@@ -72,13 +59,4 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
         return searhDepartmentById(id);
     }
 
-    @Override
-    public Boolean deleteDepartment(Long id) {
-        String sql = "DELETE FROM departments WHERE id = ?";
-        int update = template.update(sql, id);
-        if (update == 1){
-            return true;
-        }
-        return false;
-    }
 }

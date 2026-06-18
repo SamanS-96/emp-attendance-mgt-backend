@@ -2,12 +2,13 @@ package edu.icet.ecom.service.department.impl;
 
 import edu.icet.ecom.model.dto.request.DepartmentCreationRequest;
 import edu.icet.ecom.model.dto.response.DepartmentResponse;
-import edu.icet.ecom.model.entity.Department;
+import edu.icet.ecom.entity.Department;
 import edu.icet.ecom.repository.department.DepartmentRepository;
 import edu.icet.ecom.service.department.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,26 +19,42 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public List<DepartmentResponse> getAllDepartments() {
-        return departmentRepository.getAllDepartments();
+        List<Department> allDepartments = departmentRepository.getAllDepartments();
+        List<DepartmentResponse> departmentResponseList = new ArrayList<>();
+        allDepartments.forEach(department -> {
+            departmentResponseList.add(new DepartmentResponse(
+                    department.getName(),
+                    department.getDescription()
+            ));
+        });
+        return departmentResponseList;
     }
 
     @Override
     public DepartmentResponse getDepartmentById(Long id) {
-        return departmentRepository.searhDepartmentById(id);
+        Department department = departmentRepository.searhDepartmentById(id);
+        return new DepartmentResponse(
+                department.getName(),
+                department.getDescription()
+        );
     }
 
     @Override
     public DepartmentResponse saveDepartment(DepartmentCreationRequest departmentCreationRequest) {
-        return departmentRepository.saveDepartment(departmentCreationRequest);
+        Department department = departmentRepository.saveDepartment(departmentCreationRequest);
+        return new DepartmentResponse(
+                department.getName(),
+                department.getDescription()
+        );
     }
 
     @Override
     public DepartmentResponse updateDepartment(Long id, DepartmentCreationRequest departmentCreationRequest) {
-        return departmentRepository.updateDepartment(id, departmentCreationRequest);
+        Department department = departmentRepository.updateDepartment(id, departmentCreationRequest);
+        return new DepartmentResponse(
+                department.getName(),
+                department.getDescription()
+        );
     }
 
-    @Override
-    public Boolean deleteDepartment(Long id) {
-        return departmentRepository.deleteDepartment(id);
-    }
 }

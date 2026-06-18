@@ -1,10 +1,7 @@
 package edu.icet.ecom.controller.department;
 
 import edu.icet.ecom.model.dto.request.DepartmentCreationRequest;
-import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
 import edu.icet.ecom.model.dto.response.DepartmentResponse;
-import edu.icet.ecom.model.dto.response.EmployeeResponse;
-import edu.icet.ecom.model.entity.Department;
 import edu.icet.ecom.service.department.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -41,8 +38,4 @@ public class DepartmentController {
         return departmentService.updateDepartment(id, departmentCreationRequest);
     }
 
-    @DeleteMapping("/delete/{id}")
-    Boolean deleteDepartment(@PathVariable Long id){
-        return departmentService.deleteDepartment(id);
-    }
 }

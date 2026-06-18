@@ -1,6 +1,5 @@
 package edu.icet.ecom.model.dto.response;
 
-import edu.icet.ecom.model.entity.Department;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,4 +15,7 @@ public class EmployeeResponse {
     private String phone;
     private LocalDate joinDate;
     private DepartmentResponse department;
+    private String role;
+    private String userName;
+    private String password;
 }

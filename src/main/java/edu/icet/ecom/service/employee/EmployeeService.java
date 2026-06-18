@@ -2,7 +2,6 @@ package edu.icet.ecom.service.employee;
 
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
 import edu.icet.ecom.model.dto.response.EmployeeResponse;
-import edu.icet.ecom.model.entity.Employee;
 
 import java.util.List;
 
@@ -15,5 +14,5 @@ public interface EmployeeService {
 
     EmployeeResponse updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest);
 
-    Boolean deleteEmployee(Long id);
+    Boolean deactivateEmployee(Long id);
 }

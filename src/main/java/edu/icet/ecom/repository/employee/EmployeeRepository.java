@@ -1,21 +1,26 @@
 package edu.icet.ecom.repository.employee;
 
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
-import edu.icet.ecom.model.dto.response.EmployeeResponse;
-import edu.icet.ecom.model.entity.Employee;
+import edu.icet.ecom.entity.Employee;
+import edu.icet.ecom.entity.User;
 
 import java.util.List;
 
 public interface EmployeeRepository {
 
-    List<EmployeeResponse> getAllEmployees();
+    List<Employee> getAllEmployees();
 
-    EmployeeResponse getEmployeeById(Long id);
+    Employee getEmployeeById(Long id);
 
-    EmployeeResponse saveEmployee(EmployeeCreationRequest employeeCreationRequest);
+    Employee saveEmployee(EmployeeCreationRequest employeeCreationRequest);
 
-    EmployeeResponse updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest);
+    Employee updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest);
 
-    Boolean deleteEmployee(Long id);
+    Boolean deactivateEmployee(Long id);
 
+    User getUser(Long id);
+
+    User createNewUser(EmployeeCreationRequest employeeCreationRequest);
+
+    User updateUser(Long id, EmployeeCreationRequest employeeCreationRequest);
 }

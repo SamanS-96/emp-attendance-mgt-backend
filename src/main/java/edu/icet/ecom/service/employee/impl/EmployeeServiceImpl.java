@@ -1,13 +1,19 @@
 package edu.icet.ecom.service.employee.impl;
 
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
+import edu.icet.ecom.model.dto.response.DepartmentResponse;
 import edu.icet.ecom.model.dto.response.EmployeeResponse;
-import edu.icet.ecom.model.entity.Employee;
+import edu.icet.ecom.entity.Employee;
+import edu.icet.ecom.entity.User;
+import edu.icet.ecom.repository.department.DepartmentRepository;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import edu.icet.ecom.service.employee.EmployeeService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,29 +21,101 @@ import java.util.List;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
     @Override
     public List<EmployeeResponse> getAllEmployees() {
-        return employeeRepository.getAllEmployees();
+        List<Employee> allEmployees = employeeRepository.getAllEmployees();
+        List<EmployeeResponse> employeeResponseList = new ArrayList<>();
+        allEmployees.forEach(employee -> {
+            employeeResponseList.add(new EmployeeResponse(
+                    employee.getEmployeeCode(),
+                    employee.getFirstName(),
+                    employee.getLastName(),
+                    employee.getEmail(),
+                    employee.getPhone(),
+                    employee.getJoinDate(),
+                    new DepartmentResponse(
+                            departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
+                            departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
+                    ),
+                    employeeRepository.getUser(employee.getId()).getRole(),
+                    employeeRepository.getUser(employee.getId()).getUsername(),
+                    employeeRepository.getUser(employee.getId()).getPassword()
+            ));
+        });
+        return employeeResponseList;
     }
 
     @Override
     public EmployeeResponse getEmployeeById(Long id) {
-        return employeeRepository.getEmployeeById(id);
+        Employee employee = employeeRepository.getEmployeeById(id);
+        return new EmployeeResponse(
+                employee.getEmployeeCode(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getEmail(),
+                employee.getPhone(),
+                employee.getJoinDate(),
+                new DepartmentResponse(
+                        departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
+                        departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
+                ),
+                employeeRepository.getUser(employee.getId()).getRole(),
+                employeeRepository.getUser(employee.getId()).getUsername(),
+                employeeRepository.getUser(employee.getId()).getPassword()
+        );
     }
 
     @Override
+    @Transactional
     public EmployeeResponse saveEmployee(EmployeeCreationRequest employeeCreationRequest) {
-        return employeeRepository.saveEmployee(employeeCreationRequest);
+
+        Employee employee = employeeRepository.saveEmployee(employeeCreationRequest);
+        User newUser = employeeRepository.createNewUser(employeeCreationRequest);
+
+        return new EmployeeResponse(
+                employee.getEmployeeCode(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getEmail(),
+                employee.getPhone(),
+                employee.getJoinDate(),
+                new DepartmentResponse(
+                        departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
+                        departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
+                ),
+                newUser.getRole(),
+                newUser.getUsername(),
+                newUser.getPassword()
+        );
     }
 
     @Override
+    @Transactional
     public EmployeeResponse updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest) {
-        return employeeRepository.updateEmployee(id, employeeCreationRequest);
+        Employee employee = employeeRepository.updateEmployee(id, employeeCreationRequest);
+        User updatedUser = employeeRepository.updateUser(id, employeeCreationRequest);
+
+        return new EmployeeResponse(
+                employee.getEmployeeCode(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getEmail(),
+                employee.getPhone(),
+                employee.getJoinDate(),
+                new DepartmentResponse(
+                        departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
+                        departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
+                ),
+                updatedUser.getRole(),
+                updatedUser.getUsername(),
+                updatedUser.getPassword()
+        );
     }
 
     @Override
-    public Boolean deleteEmployee(Long id) {
-        return employeeRepository.deleteEmployee(id);
+    public Boolean deactivateEmployee(Long id) {
+        return employeeRepository.deactivateEmployee(id);
     }
 }

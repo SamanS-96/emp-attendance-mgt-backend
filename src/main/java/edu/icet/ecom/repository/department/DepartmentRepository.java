@@ -1,19 +1,17 @@
 package edu.icet.ecom.repository.department;
 
 import edu.icet.ecom.model.dto.request.DepartmentCreationRequest;
-import edu.icet.ecom.model.dto.response.DepartmentResponse;
-import edu.icet.ecom.model.entity.Department;
+import edu.icet.ecom.entity.Department;
 
 import java.util.List;
 
 public interface DepartmentRepository {
-    List<DepartmentResponse> getAllDepartments();
+    List<Department> getAllDepartments();
 
-    DepartmentResponse searhDepartmentById(Long departmentId);
+    Department searhDepartmentById(Long departmentId);
 
-    DepartmentResponse saveDepartment(DepartmentCreationRequest departmentCreationRequest);
+    Department saveDepartment(DepartmentCreationRequest departmentCreationRequest);
 
-    DepartmentResponse updateDepartment(Long id, DepartmentCreationRequest departmentCreationRequest);
+    Department updateDepartment(Long id, DepartmentCreationRequest departmentCreationRequest);
 
-    Boolean deleteDepartment(Long id);
 }

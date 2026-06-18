@@ -2,7 +2,6 @@ package edu.icet.ecom.controller.employee;
 
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
 import edu.icet.ecom.model.dto.response.EmployeeResponse;
-import edu.icet.ecom.model.entity.Employee;
 import edu.icet.ecom.service.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +38,8 @@ public class EmployeeController {
         return employeeService.updateEmployee(id, employeeCreationRequest);
     }
 
-    @DeleteMapping("/delete/{id}")
-    Boolean deleteEmployee(@PathVariable Long id){
-        return employeeService.deleteEmployee(id);
+    @PutMapping("/deactivate/{id}")
+    Boolean deactivateEmployee(@PathVariable Long id){
+        return employeeService.deactivateEmployee(id);
     }
 }

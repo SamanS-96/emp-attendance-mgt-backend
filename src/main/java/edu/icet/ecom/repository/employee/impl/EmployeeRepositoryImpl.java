@@ -1,13 +1,11 @@
 package edu.icet.ecom.repository.employee.impl;
 
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
-import edu.icet.ecom.model.dto.response.DepartmentResponse;
-import edu.icet.ecom.model.dto.response.EmployeeResponse;
-import edu.icet.ecom.model.entity.Employee;
-import edu.icet.ecom.repository.department.DepartmentRepository;
+import edu.icet.ecom.entity.Employee;
+import edu.icet.ecom.entity.User;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
-import edu.icet.ecom.repository.mapper.EmployeeRowMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -24,48 +21,21 @@ import java.util.List;
 public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     private final JdbcTemplate template;
-    private final DepartmentRepository departmentRepository;
 
     @Override
-    public List<EmployeeResponse> getAllEmployees() {
-        List<Employee> employeeList = template.query("SELECT * FROM employees", new EmployeeRowMapper());
-        List<EmployeeResponse> employeeResponseList = new ArrayList<>();
-        employeeList.forEach(employee -> {
-            employeeResponseList.add(new EmployeeResponse(
-                    employee.getEmployeeCode(),
-                    employee.getFirstName(),
-                    employee.getLastName(),
-                    employee.getEmail(),
-                    employee.getPhone(),
-                    employee.getJoinDate(),
-                    new DepartmentResponse(
-                            departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
-                            departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
-                    )
-            ));
-        });
-        return employeeResponseList;
+    public List<Employee> getAllEmployees() {
+        return template.query("SELECT * FROM employees", new BeanPropertyRowMapper<>(Employee.class));
     }
 
     @Override
-    public EmployeeResponse getEmployeeById(Long id) {
-        Employee employee = template.queryForObject("SELECT * FROM employees WHERE id = ?", new EmployeeRowMapper(), id);
-        return new EmployeeResponse(
-                employee.getEmployeeCode(),
-                employee.getFirstName(),
-                employee.getLastName(),
-                employee.getEmail(),
-                employee.getPhone(),
-                employee.getJoinDate(),
-                new DepartmentResponse(
-                        departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
-                        departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
-                )
-        );
+    public Employee getEmployeeById(Long id) {
+        return template.queryForObject("SELECT * FROM employees WHERE id = ?", new BeanPropertyRowMapper<>(Employee.class), id);
     }
 
+    Long generatedEmpId = null;
+
     @Override
-    public EmployeeResponse saveEmployee(EmployeeCreationRequest employeeCreationRequest) {
+    public Employee saveEmployee(EmployeeCreationRequest employeeCreationRequest) {
         String sql = "INSERT INTO employees (employee_code, first_name, last_name, email, phone, join_date, department_id)" +
                 "VALUES" +
                 "(?, ?, ?, ?, ?, ?, ?)";
@@ -85,11 +55,12 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             psTm.setLong(7,employeeCreationRequest.getDepartmentId());
             return psTm;
         }, keyHolder);
-        return getEmployeeById(keyHolder.getKey().longValue());
+        generatedEmpId = keyHolder.getKey().longValue();
+        return getEmployeeById(generatedEmpId);
     }
 
     @Override
-    public EmployeeResponse updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest) {
+    public Employee updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest) {
         String sql = "UPDATE employees SET first_name = ?, last_name = ?, email = ?, phone = ?, department_id = ? WHERE id  = ?";
 
         template.update(sql,
@@ -104,12 +75,48 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
-    public Boolean deleteEmployee(Long id) {
-        String sql = "DELETE FROM employees WHERE id = ?";
+    public Boolean deactivateEmployee(Long id) {
+        String sql = "UPDATE employees SET is_active = FALSE WHERE id = ?";
         int update = template.update(sql, id);
         if (update == 1){
             return true;
         }
         return false;
+    }
+
+    @Override
+    public User getUser(Long id) {
+        return template.queryForObject("SELECT * FROM users WHERE employee_id = ?", new BeanPropertyRowMapper<>(User.class), id);
+    }
+
+    @Override
+    public User createNewUser(EmployeeCreationRequest employeeCreationRequest) {
+
+        String sql = "INSERT INTO users(username, password, role, employee_id) VALUES (?, ?, ?, ?)";
+        String lastEmpCode = template.queryForObject("SELECT MAX(employee_code) FROM employees", String.class);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        template.update(connection ->{
+            PreparedStatement psTm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            psTm.setString(1,employeeCreationRequest.getFirstName()+"_"+lastEmpCode);
+            psTm.setString(2,employeeCreationRequest.getFirstName()+"@123");
+            psTm.setString(3,employeeCreationRequest.getRole());
+            psTm.setLong(4,generatedEmpId);
+            return psTm;
+        }, keyHolder);
+        return getUser(generatedEmpId);
+    }
+
+    @Override
+    public User updateUser(Long id, EmployeeCreationRequest employeeCreationRequest) {
+        String sql = "UPDATE users SET username = ?, password = ?, role = ? WHERE employee_id = ?";
+        template.update(sql,
+                employeeCreationRequest.getFirstName()+"_"+getEmployeeById(id).getEmployeeCode(),
+                employeeCreationRequest.getFirstName()+"@123",
+                employeeCreationRequest.getRole(),
+                id
+                );
+        return getUser(id);
     }
 }
