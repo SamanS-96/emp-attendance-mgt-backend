@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class EmployeeResponse {
+    private Long id;
     private String employeeCode;
     private String firstName;
     private String lastName;

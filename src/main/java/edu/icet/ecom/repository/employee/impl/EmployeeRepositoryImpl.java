@@ -24,7 +24,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public List<Employee> getAllEmployees() {
-        return template.query("SELECT * FROM employees", new BeanPropertyRowMapper<>(Employee.class));
+        return template.query("SELECT * FROM employees WHERE is_active = TRUE", new BeanPropertyRowMapper<>(Employee.class));
     }
 
     @Override

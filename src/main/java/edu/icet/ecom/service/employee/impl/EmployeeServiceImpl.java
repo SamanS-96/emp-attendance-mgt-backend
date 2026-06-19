@@ -28,6 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<EmployeeResponse> employeeResponseList = new ArrayList<>();
         allEmployees.forEach(employee -> {
             employeeResponseList.add(new EmployeeResponse(
+                    employee.getId(),
                     employee.getEmployeeCode(),
                     employee.getFirstName(),
                     employee.getLastName(),
@@ -35,6 +36,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     employee.getPhone(),
                     employee.getJoinDate(),
                     new DepartmentResponse(
+                            employee.getDepartmentId(),
                             departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
                             departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
                     ),
@@ -50,6 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponse getEmployeeById(Long id) {
         Employee employee = employeeRepository.getEmployeeById(id);
         return new EmployeeResponse(
+                employee.getId(),
                 employee.getEmployeeCode(),
                 employee.getFirstName(),
                 employee.getLastName(),
@@ -57,6 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employee.getPhone(),
                 employee.getJoinDate(),
                 new DepartmentResponse(
+                        employee.getDepartmentId(),
                         departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
                         departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
                 ),
@@ -74,6 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         User newUser = employeeRepository.createNewUser(employeeCreationRequest);
 
         return new EmployeeResponse(
+                employee.getId(),
                 employee.getEmployeeCode(),
                 employee.getFirstName(),
                 employee.getLastName(),
@@ -81,6 +86,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employee.getPhone(),
                 employee.getJoinDate(),
                 new DepartmentResponse(
+                        employee.getDepartmentId(),
                         departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
                         departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
                 ),
@@ -97,6 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         User updatedUser = employeeRepository.updateUser(id, employeeCreationRequest);
 
         return new EmployeeResponse(
+                employee.getId(),
                 employee.getEmployeeCode(),
                 employee.getFirstName(),
                 employee.getLastName(),
@@ -104,6 +111,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employee.getPhone(),
                 employee.getJoinDate(),
                 new DepartmentResponse(
+                        employee.getDepartmentId(),
                         departmentRepository.searhDepartmentById(employee.getDepartmentId()).getName(),
                         departmentRepository.searhDepartmentById(employee.getDepartmentId()).getDescription()
                 ),

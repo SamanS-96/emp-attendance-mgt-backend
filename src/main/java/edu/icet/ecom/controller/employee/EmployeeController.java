@@ -1,16 +1,20 @@
 package edu.icet.ecom.controller.employee;
 
+import edu.icet.ecom.enums.Department;
+import edu.icet.ecom.enums.UserRole;
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
 import edu.icet.ecom.model.dto.response.EmployeeResponse;
 import edu.icet.ecom.service.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/employees")
+@CrossOrigin(origins = "http://localhost:4200")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -41,5 +45,19 @@ public class EmployeeController {
     @PutMapping("/deactivate/{id}")
     Boolean deactivateEmployee(@PathVariable Long id){
         return employeeService.deactivateEmployee(id);
+    }
+
+    @GetMapping("/roles")
+    public List<String> getRoles(){
+        return Arrays.stream(UserRole.values())
+                .map(Enum::name)
+                .toList();
+    }
+
+    @GetMapping("/departments")
+    public List<String> getDepartments(){
+        return Arrays.stream(Department.values())
+                .map(Enum::name)
+                .toList();
     }
 }

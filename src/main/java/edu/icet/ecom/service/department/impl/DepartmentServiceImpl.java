@@ -23,6 +23,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         List<DepartmentResponse> departmentResponseList = new ArrayList<>();
         allDepartments.forEach(department -> {
             departmentResponseList.add(new DepartmentResponse(
+                    department.getId(),
                     department.getName(),
                     department.getDescription()
             ));
@@ -34,6 +35,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public DepartmentResponse getDepartmentById(Long id) {
         Department department = departmentRepository.searhDepartmentById(id);
         return new DepartmentResponse(
+                department.getId(),
                 department.getName(),
                 department.getDescription()
         );
@@ -43,6 +45,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public DepartmentResponse saveDepartment(DepartmentCreationRequest departmentCreationRequest) {
         Department department = departmentRepository.saveDepartment(departmentCreationRequest);
         return new DepartmentResponse(
+                department.getId(),
                 department.getName(),
                 department.getDescription()
         );
@@ -52,6 +55,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public DepartmentResponse updateDepartment(Long id, DepartmentCreationRequest departmentCreationRequest) {
         Department department = departmentRepository.updateDepartment(id, departmentCreationRequest);
         return new DepartmentResponse(
+                department.getId(),
                 department.getName(),
                 department.getDescription()
         );
