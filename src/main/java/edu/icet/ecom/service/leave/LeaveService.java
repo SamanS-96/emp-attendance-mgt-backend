@@ -11,4 +11,6 @@ public interface LeaveService {
     Boolean updateLeave(Long id, LeaveRequest leaveRequest);
 
     List<LeaveResponse> geAll();
+
+    LeaveResponse geById(Long id);
 }

@@ -8,7 +8,9 @@ import java.util.List;
 public interface LeaveRepository {
     Boolean createLeave(LeaveRequest leaveRequest);
 
-    Boolean uddateLeave(Long id, LeaveRequest leaveRequest);
+    Boolean updateLeave(Long id, LeaveRequest leaveRequest);
 
     List<Leave> getAll();
+
+    Leave getById(Long id);
 }

@@ -20,6 +20,8 @@ public interface EmployeeRepository {
 
     User getUser(Long id);
 
+    User getUser(String userName);
+
     User createNewUser(EmployeeCreationRequest employeeCreationRequest);
 
     User updateUser(Long id, EmployeeCreationRequest employeeCreationRequest);

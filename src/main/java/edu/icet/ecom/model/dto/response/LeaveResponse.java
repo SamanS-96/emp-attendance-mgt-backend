@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class LeaveResponse {
     private Long id;
-    private Long employeeId;
+    private String userName;
     private LocalDate fromDate;
     private LocalDate toDate;
     private String reason;

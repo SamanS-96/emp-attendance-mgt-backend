@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -49,6 +50,11 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
         template.update("UPDATE attendance SET status = 'HALF_DAY' WHERE employee_id = ? AND attendance_date = CURDATE()",
                 empId
                 );
+    }
+
+    @Override
+    public List<Attendance> getAllAttendance() {
+        return template.query("SELECT * FROM attendance", new BeanPropertyRowMapper<>(Attendance.class));
     }
 
     private Attendance getAttendanceDetails(Long employeeId) {

@@ -2,6 +2,8 @@ package edu.icet.ecom.repository.leave.impl;
 
 import edu.icet.ecom.entity.Leave;
 import edu.icet.ecom.model.dto.request.LeaveRequest;
+import edu.icet.ecom.repository.employee.EmployeeRepository;
+import edu.icet.ecom.repository.employee.impl.EmployeeRepositoryImpl;
 import edu.icet.ecom.repository.leave.LeaveRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -15,12 +17,13 @@ import java.util.List;
 public class LeaveRepositoryImpl implements LeaveRepository {
 
     private final JdbcTemplate template;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public Boolean createLeave(LeaveRequest leaveRequest) {
 
         template.update("INSERT INTO leave_requests(employee_id, from_date, to_date, reason) VALUES (?, ?, ?, ?)",
-                leaveRequest.getEmployeeId(),
+                employeeRepository.getUser(leaveRequest.getUserName()).getEmployeeId(),
                 leaveRequest.getFromDate(),
                 leaveRequest.getToDate(),
                 leaveRequest.getReason()
@@ -29,9 +32,9 @@ public class LeaveRepositoryImpl implements LeaveRepository {
     }
 
     @Override
-    public Boolean uddateLeave(Long id, LeaveRequest leaveRequest) {
-        template.update("UPDATE leave_requests SET employee_id = ?, from_date = ?, to_date = ?, reason + ? WHERE id = ?",
-                leaveRequest.getEmployeeId(),
+    public Boolean updateLeave(Long id, LeaveRequest leaveRequest) {
+        template.update("UPDATE leave_requests SET employee_id = ?, from_date = ?, to_date = ?, reason = ? WHERE id = ?",
+                employeeRepository.getUser(leaveRequest.getUserName()).getEmployeeId(),
                 leaveRequest.getFromDate(),
                 leaveRequest.getToDate(),
                 leaveRequest.getReason(),
@@ -43,5 +46,10 @@ public class LeaveRepositoryImpl implements LeaveRepository {
     @Override
     public List<Leave> getAll() {
         return template.query("SELECT*FROM leave_requests", new BeanPropertyRowMapper<>(Leave.class));
+    }
+
+    @Override
+    public Leave getById(Long id) {
+        return template.queryForObject("SELECT*FROM leave_requests WHERE id = ?", new BeanPropertyRowMapper<>(Leave.class), id);
     }
 }

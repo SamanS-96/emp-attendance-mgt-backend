@@ -21,15 +21,20 @@ public class LeaveController {
         return leaveService.createLeave(leaveRequest);
     }
 
-    @PutMapping("/leave-update")
+    @PutMapping("/leave-update/{id}")
     Boolean updateLeave(
             @PathVariable Long id,
             @RequestBody LeaveRequest leaveRequest){
         return leaveService.updateLeave(id, leaveRequest);
     }
 
-    @GetMapping("get-all")
-    List<LeaveResponse> getByEmpId(){
+    @GetMapping("/get-all")
+    List<LeaveResponse> getAll(){
         return leaveService.geAll();
+    }
+
+    @GetMapping("/get/{id}")
+    LeaveResponse getById(@PathVariable Long id){
+        return leaveService.geById(id);
     }
 }

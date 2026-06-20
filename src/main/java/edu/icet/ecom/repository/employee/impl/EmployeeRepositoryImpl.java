@@ -90,6 +90,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
+    public User getUser(String userName) {
+        return template.queryForObject("SELECT * FROM users WHERE username = ?", new BeanPropertyRowMapper<>(User.class), userName);
+    }
+
+    @Override
     public User createNewUser(EmployeeCreationRequest employeeCreationRequest) {
 
         String sql = "INSERT INTO users(username, password, role, employee_id) VALUES (?, ?, ?, ?)";
