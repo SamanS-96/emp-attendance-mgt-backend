@@ -5,6 +5,7 @@ import edu.icet.ecom.entity.Employee;
 import edu.icet.ecom.entity.User;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -91,7 +92,15 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public User getUser(String userName) {
-        return template.queryForObject("SELECT * FROM users WHERE username = ?", new BeanPropertyRowMapper<>(User.class), userName);
+        try {
+            return template.queryForObject(
+                    "SELECT * FROM users WHERE username = ?",
+                    new BeanPropertyRowMapper<>(User.class),
+                    userName
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

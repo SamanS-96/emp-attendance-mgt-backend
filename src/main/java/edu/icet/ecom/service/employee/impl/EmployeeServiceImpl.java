@@ -3,8 +3,10 @@ package edu.icet.ecom.service.employee.impl;
 import edu.icet.ecom.entity.Employee;
 import edu.icet.ecom.entity.User;
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
+import edu.icet.ecom.model.dto.request.LoginRequest;
 import edu.icet.ecom.model.dto.response.DepartmentResponse;
 import edu.icet.ecom.model.dto.response.EmployeeResponse;
+import edu.icet.ecom.model.dto.response.UserResponse;
 import edu.icet.ecom.repository.department.DepartmentRepository;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import edu.icet.ecom.service.employee.EmployeeService;
@@ -124,5 +126,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Boolean deactivateEmployee(Long id) {
         return employeeRepository.deactivateEmployee(id);
+    }
+
+    @Override
+    public UserResponse getUserDetails(LoginRequest loginRequest) {
+        User user = employeeRepository.getUser(loginRequest.getUserName());
+        if (user != null){
+            if (user.getPassword().equals(loginRequest.getPassword())){
+                return new UserResponse(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getRole()
+                );
+            }
+        }
+        return null;
     }
 }
