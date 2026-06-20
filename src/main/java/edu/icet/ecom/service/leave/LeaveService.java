@@ -1,6 +1,7 @@
 package edu.icet.ecom.service.leave;
 
 import edu.icet.ecom.model.dto.request.LeaveRequest;
+import edu.icet.ecom.model.dto.response.AttendanceResponse;
 import edu.icet.ecom.model.dto.response.LeaveResponse;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface LeaveService {
     List<LeaveResponse> geAll();
 
     LeaveResponse geById(Long id);
+
+    List<LeaveResponse> getAllLeavesByUserName(String userName);
 }

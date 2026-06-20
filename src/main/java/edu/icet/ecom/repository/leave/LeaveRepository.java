@@ -13,4 +13,6 @@ public interface LeaveRepository {
     List<Leave> getAll();
 
     Leave getById(Long id);
+
+    List<Leave> getAllLeavesByUserName(String userName);
 }

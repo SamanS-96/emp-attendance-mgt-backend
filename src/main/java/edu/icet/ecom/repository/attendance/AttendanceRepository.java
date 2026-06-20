@@ -17,4 +17,6 @@ public interface AttendanceRepository {
     void setStatusForHalfday(Long empId);
 
     List<Attendance> getAllAttendance();
+
+    List<Attendance> getAllAttendanceByUserName(String userName);
 }

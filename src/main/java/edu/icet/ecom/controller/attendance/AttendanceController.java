@@ -32,4 +32,9 @@ public class AttendanceController {
         return attendanceService.getAllAttendance();
     }
 
+    @GetMapping("/get-allByUserName")
+    List<AttendanceResponse> getAllByUserName(@RequestParam String userName){
+        return attendanceService.getAllAttendanceByUserName(userName);
+    }
+
 }

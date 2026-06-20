@@ -14,7 +14,7 @@ public class LoginController {
 
     private final EmployeeService employeeService;
 
-    @GetMapping("/get-user")
+    @PostMapping("/get-user")
     UserResponse getUserDetails(@RequestBody LoginRequest loginRequest){
         return employeeService.getUserDetails(loginRequest);
     }

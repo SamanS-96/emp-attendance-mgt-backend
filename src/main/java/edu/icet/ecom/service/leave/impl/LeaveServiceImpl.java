@@ -2,6 +2,7 @@ package edu.icet.ecom.service.leave.impl;
 
 import edu.icet.ecom.entity.Leave;
 import edu.icet.ecom.model.dto.request.LeaveRequest;
+import edu.icet.ecom.model.dto.response.AttendanceResponse;
 import edu.icet.ecom.model.dto.response.LeaveResponse;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import edu.icet.ecom.repository.leave.LeaveRepository;
@@ -57,5 +58,22 @@ public class LeaveServiceImpl implements LeaveService {
                 leave.getReason(),
                 leave.getStatus()
         );
+    }
+
+    @Override
+    public List<LeaveResponse> getAllLeavesByUserName(String userName) {
+        List<Leave> leaveList = leaveRepository.getAllLeavesByUserName(userName);
+        List<LeaveResponse> leaveResponseList = new ArrayList<>();
+        leaveList.forEach(leave -> {
+            leaveResponseList.add(new LeaveResponse(
+                    leave.getId(),
+                    employeeRepository.getUser(leave.getEmployeeId()).getUsername(),
+                    leave.getFromDate(),
+                    leave.getToDate(),
+                    leave.getReason(),
+                    leave.getStatus()
+            ));
+        });
+        return leaveResponseList;
     }
 }

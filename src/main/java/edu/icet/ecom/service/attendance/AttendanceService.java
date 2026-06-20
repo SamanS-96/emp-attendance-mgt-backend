@@ -14,4 +14,6 @@ public interface AttendanceService {
     void setEmpStatusForAbsent();
 
     List<AttendanceResponse> getAllAttendance();
+
+    List<AttendanceResponse> getAllAttendanceByUserName(String userName);
 }

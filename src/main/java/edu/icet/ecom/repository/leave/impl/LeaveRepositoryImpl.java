@@ -52,4 +52,11 @@ public class LeaveRepositoryImpl implements LeaveRepository {
     public Leave getById(Long id) {
         return template.queryForObject("SELECT*FROM leave_requests WHERE id = ?", new BeanPropertyRowMapper<>(Leave.class), id);
     }
+
+    @Override
+    public List<Leave> getAllLeavesByUserName(String userName) {
+        return template.query("SELECT*FROM leave_requests WHERE employee_id = ?", new BeanPropertyRowMapper<>(Leave.class),
+                employeeRepository.getUser(userName).getEmployeeId()
+                );
+    }
 }

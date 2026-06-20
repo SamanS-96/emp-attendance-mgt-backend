@@ -3,7 +3,9 @@ package edu.icet.ecom.repository.attendance.impl;
 import edu.icet.ecom.entity.Attendance;
 import edu.icet.ecom.model.dto.request.CheckInCreationRequest;
 import edu.icet.ecom.model.dto.request.CheckOutCreationRequest;
+import edu.icet.ecom.model.dto.response.AttendanceResponse;
 import edu.icet.ecom.repository.attendance.AttendanceRepository;
+import edu.icet.ecom.repository.employee.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +20,7 @@ import java.util.List;
 public class AttendanceRepositoryImpl implements AttendanceRepository {
 
     private final JdbcTemplate template;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public Boolean saveCheckIn(CheckInCreationRequest checkInCreationRequest) {
@@ -55,6 +58,13 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
     @Override
     public List<Attendance> getAllAttendance() {
         return template.query("SELECT * FROM attendance", new BeanPropertyRowMapper<>(Attendance.class));
+    }
+
+    @Override
+    public List<Attendance> getAllAttendanceByUserName(String userName) {
+        return template.query("SELECT * FROM attendance WHERE employee_id = ?", new BeanPropertyRowMapper<>(Attendance.class),
+                employeeRepository.getUser(userName).getEmployeeId()
+                );
     }
 
     private Attendance getAttendanceDetails(Long employeeId) {

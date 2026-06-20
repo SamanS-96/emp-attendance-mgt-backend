@@ -67,4 +67,21 @@ public class AttendanceServiceImpl implements AttendanceService {
         });
         return attendanceResponseList;
     }
+
+    @Override
+    public List<AttendanceResponse> getAllAttendanceByUserName(String userName) {
+        List<Attendance> attendanceList = attendanceRepository.getAllAttendanceByUserName(userName);
+        List<AttendanceResponse> attendanceResponseList = new ArrayList<>();
+        attendanceList.forEach(attendance -> {
+            attendanceResponseList.add(new AttendanceResponse(
+                    employeeRepository.getUser(attendance.getEmployeeId()).getUsername(),
+                    attendance.getAttendanceDate(),
+                    attendance.getCheckInTime() != null ? attendance.getCheckInTime().toLocalTime() : null,
+                    attendance.getCheckOutTime() != null ? attendance.getCheckOutTime().toLocalTime() : null,
+                    attendance.getWorkingHours(),
+                    attendance.getStatus()
+            ));
+        });
+        return attendanceResponseList;
+    }
 }
