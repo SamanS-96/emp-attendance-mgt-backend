@@ -61,4 +61,14 @@ public class DepartmentServiceImpl implements DepartmentService {
         );
     }
 
+    @Override
+    public List<String> getDepartmentNames() {
+        List<DepartmentResponse> allDepartments = getAllDepartments();
+        List<String> departmentNamesList = new ArrayList<>();
+        allDepartments.forEach(departmentResponse -> {
+            departmentNamesList.add(departmentResponse.getName());
+        });
+        return departmentNamesList;
+    }
+
 }

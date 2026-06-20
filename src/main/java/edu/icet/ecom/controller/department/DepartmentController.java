@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/departments")
+@CrossOrigin(origins = "http://localhost:4200")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -36,6 +37,11 @@ public class DepartmentController {
             @RequestBody DepartmentCreationRequest departmentCreationRequest){
 
         return departmentService.updateDepartment(id, departmentCreationRequest);
+    }
+
+    @GetMapping("/get-names")
+    public List<String> getDepartmentNames(){
+        return departmentService.getDepartmentNames();
     }
 
 }

@@ -1,6 +1,5 @@
 package edu.icet.ecom.controller.employee;
 
-import edu.icet.ecom.enums.Department;
 import edu.icet.ecom.enums.UserRole;
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
 import edu.icet.ecom.model.dto.response.EmployeeResponse;
@@ -54,10 +53,4 @@ public class EmployeeController {
                 .toList();
     }
 
-    @GetMapping("/departments")
-    public List<String> getDepartments(){
-        return Arrays.stream(Department.values())
-                .map(Enum::name)
-                .toList();
-    }
 }
