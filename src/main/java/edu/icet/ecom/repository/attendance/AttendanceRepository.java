@@ -19,4 +19,8 @@ public interface AttendanceRepository {
     List<Attendance> getAllAttendance();
 
     List<Attendance> getAllAttendanceByUserName(String userName);
+
+    Boolean isInsertedEmployeesToAttendance();
+
+    void insertEmployeeIdsToAttendance(List<Long> employeeIdList);
 }

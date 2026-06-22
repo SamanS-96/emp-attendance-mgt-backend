@@ -1,7 +1,6 @@
 package edu.icet.ecom.controller.leave;
 
 import edu.icet.ecom.model.dto.request.LeaveRequest;
-import edu.icet.ecom.model.dto.response.AttendanceResponse;
 import edu.icet.ecom.model.dto.response.LeaveResponse;
 import edu.icet.ecom.service.leave.LeaveService;
 import lombok.RequiredArgsConstructor;

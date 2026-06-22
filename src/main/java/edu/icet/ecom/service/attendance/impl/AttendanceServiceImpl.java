@@ -4,6 +4,7 @@ import edu.icet.ecom.entity.Attendance;
 import edu.icet.ecom.model.dto.request.CheckInCreationRequest;
 import edu.icet.ecom.model.dto.request.CheckOutCreationRequest;
 import edu.icet.ecom.model.dto.response.AttendanceResponse;
+import edu.icet.ecom.model.dto.response.EmployeeResponse;
 import edu.icet.ecom.repository.attendance.AttendanceRepository;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import edu.icet.ecom.service.attendance.AttendanceService;
@@ -83,5 +84,15 @@ public class AttendanceServiceImpl implements AttendanceService {
             ));
         });
         return attendanceResponseList;
+    }
+
+    @Override
+    public Boolean isInsertedEmployeesToAttendance() {
+        return attendanceRepository.isInsertedEmployeesToAttendance();
+    }
+
+    @Override
+    public void insertEmployeeIdsToAttendance(List<Long> employeeIdList) {
+        attendanceRepository.insertEmployeeIdsToAttendance(employeeIdList);
     }
 }

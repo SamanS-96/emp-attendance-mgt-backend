@@ -67,6 +67,26 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
                 );
     }
 
+    @Override
+    public Boolean isInsertedEmployeesToAttendance() {
+        String sql = "SELECT COUNT(*) FROM attendance WHERE attendance_date = CURDATE()";
+        Integer count = template.queryForObject(sql, Integer.class);
+
+        if (count != null && count > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void insertEmployeeIdsToAttendance(List<Long> employeeIdList) {
+        String sql = "INSERT INTO attendance (employee_id, attendance_date) VALUES (?, CURDATE())";
+
+        for (Long employeeId : employeeIdList) {
+            template.update(sql, employeeId);
+        }
+    }
+
     private Attendance getAttendanceDetails(Long employeeId) {
         return template.queryForObject("SELECT * FROM attendance WHERE employee_id = ? AND attendance_date = CURDATE()",
                 new BeanPropertyRowMapper<>(Attendance.class),
