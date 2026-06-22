@@ -15,4 +15,6 @@ public interface LeaveRepository {
     Leave getById(Long id);
 
     List<Leave> getAllLeavesByUserName(String userName);
+
+    boolean isOnLeaveToday(Long employeeId);
 }

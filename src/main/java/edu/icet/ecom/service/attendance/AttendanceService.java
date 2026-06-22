@@ -4,13 +4,14 @@ import edu.icet.ecom.model.dto.request.CheckInCreationRequest;
 import edu.icet.ecom.model.dto.request.CheckOutCreationRequest;
 import edu.icet.ecom.model.dto.response.AttendanceResponse;
 import edu.icet.ecom.model.dto.response.EmployeeResponse;
+import edu.icet.ecom.model.dto.response.TodayAttendance;
 
 import java.util.List;
 
 public interface AttendanceService {
-    Boolean saveCheckIn(CheckInCreationRequest checkInCreationRequest);
+    String saveCheckIn(CheckInCreationRequest checkInCreationRequest);
 
-    Boolean saveCheckOut(CheckOutCreationRequest checkOutCreationRequest);
+    String saveCheckOut(CheckOutCreationRequest checkOutCreationRequest);
 
     void setEmpStatusForAbsent();
 
@@ -21,4 +22,6 @@ public interface AttendanceService {
     Boolean isInsertedEmployeesToAttendance();
 
     void insertEmployeeIdsToAttendance(List<Long> employeeIdList);
+
+    TodayAttendance getTodayAttDetails(String userName);
 }

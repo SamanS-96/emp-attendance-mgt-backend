@@ -142,4 +142,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return null;
     }
+
+    @Override
+    public Integer getEmployeeCount() {
+        return employeeRepository.getEmployeeCount();
+    }
 }

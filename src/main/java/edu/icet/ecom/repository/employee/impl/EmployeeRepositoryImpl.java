@@ -133,4 +133,9 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
                 );
         return getUser(id);
     }
+
+    @Override
+    public Integer getEmployeeCount() {
+        return template.queryForObject("SELECT COUNT(*) FROM employees WHERE is_active = TRUE", Integer.class);
+    }
 }

@@ -3,6 +3,7 @@ package edu.icet.ecom.controller.attendance;
 import edu.icet.ecom.model.dto.request.CheckInCreationRequest;
 import edu.icet.ecom.model.dto.request.CheckOutCreationRequest;
 import edu.icet.ecom.model.dto.response.AttendanceResponse;
+import edu.icet.ecom.model.dto.response.TodayAttendance;
 import edu.icet.ecom.service.attendance.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +19,12 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     @PutMapping("/check-in")
-    Boolean saveCheckIn(@RequestBody CheckInCreationRequest checkInCreationRequest){
+    String saveCheckIn(@RequestBody CheckInCreationRequest checkInCreationRequest){
         return attendanceService.saveCheckIn(checkInCreationRequest);
     }
 
     @PutMapping("/check-out")
-    Boolean saveCheckOut(@RequestBody CheckOutCreationRequest checkOutCreationRequest){
+    String saveCheckOut(@RequestBody CheckOutCreationRequest checkOutCreationRequest){
         return attendanceService.saveCheckOut(checkOutCreationRequest);
     }
 
@@ -35,6 +36,11 @@ public class AttendanceController {
     @GetMapping("/get-allByUserName")
     List<AttendanceResponse> getAllByUserName(@RequestParam String userName){
         return attendanceService.getAllAttendanceByUserName(userName);
+    }
+
+    @GetMapping("/get-today-details/{userName}")
+    TodayAttendance getTodayAttDetails(@PathVariable String userName){
+        return attendanceService.getTodayAttDetails(userName);
     }
 
 }

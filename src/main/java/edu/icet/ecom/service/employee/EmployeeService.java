@@ -19,4 +19,6 @@ public interface EmployeeService {
     Boolean deactivateEmployee(Long id);
 
     UserResponse getUserDetails(LoginRequest loginRequest);
+
+    Integer getEmployeeCount();
 }

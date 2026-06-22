@@ -25,4 +25,6 @@ public interface EmployeeRepository {
     User createNewUser(EmployeeCreationRequest employeeCreationRequest);
 
     User updateUser(Long id, EmployeeCreationRequest employeeCreationRequest);
+
+    Integer getEmployeeCount();
 }

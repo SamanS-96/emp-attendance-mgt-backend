@@ -59,4 +59,17 @@ public class LeaveRepositoryImpl implements LeaveRepository {
                 employeeRepository.getUser(userName).getEmployeeId()
                 );
     }
+
+    @Override
+    public boolean isOnLeaveToday(Long employeeId) {
+        Integer count = template.queryForObject(
+                "SELECT COUNT(*) FROM leave_requests WHERE employee_id = ? AND status = 'APPROVED' AND CURDATE() BETWEEN from_date AND to_date",
+                Integer.class,
+                employeeId
+        );
+        if (count != null && count > 0){
+            return true;
+        }
+        return false;
+    }
 }

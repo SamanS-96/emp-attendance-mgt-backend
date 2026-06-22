@@ -4,8 +4,10 @@ import edu.icet.ecom.entity.Attendance;
 import edu.icet.ecom.model.dto.request.CheckInCreationRequest;
 import edu.icet.ecom.model.dto.request.CheckOutCreationRequest;
 import edu.icet.ecom.model.dto.response.AttendanceResponse;
+import edu.icet.ecom.model.dto.response.TodayAttendance;
 import edu.icet.ecom.repository.attendance.AttendanceRepository;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
+import edu.icet.ecom.repository.leave.LeaveRepository;
 import edu.icet.ecom.service.attendance.AttendanceService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,29 +23,51 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
     private final EmployeeRepository employeeRepository;
+    private final LeaveRepository leaveRepository;
 
     @Override
     @Transactional
-    public Boolean saveCheckIn(CheckInCreationRequest checkInCreationRequest) {
+    public String saveCheckIn(CheckInCreationRequest checkInCreationRequest) {
 
-        if (LocalTime.now().isAfter(LocalTime.of(12,30))){
-            attendanceRepository.saveCheckIn(checkInCreationRequest);
-            attendanceRepository.setStatusForHalfday(employeeRepository.getUser(checkInCreationRequest.getUserName()).getEmployeeId());
-            return true;
+        if (leaveRepository.isOnLeaveToday(employeeRepository.getUser(checkInCreationRequest.getUserName()).getEmployeeId())){
+            return "You're On Leave Today, Can't Check In !";
         }
-        return attendanceRepository.saveCheckIn(checkInCreationRequest);
+
+        if (LocalTime.now().isAfter(LocalTime.of(13,0))){
+            Boolean isCheckedIn = attendanceRepository.isCheckedIn(checkInCreationRequest.getUserName());
+            return isCheckedIn ? "You Are Allready Checked In !" : "You Can't Check In After 1:00 pm !";
+        }
+
+        if (LocalTime.now().isAfter(LocalTime.of(8,30)) && LocalTime.now().isBefore(LocalTime.of(13,0))){
+            Boolean isSaved = attendanceRepository.saveCheckIn(checkInCreationRequest);
+            attendanceRepository.setStatusForHalfday(employeeRepository.getUser(checkInCreationRequest.getUserName()).getEmployeeId());
+            return isSaved ? "Check In Successful, Thankyou !" : "You Are Allready Checked In !";
+        }
+
+        Boolean isSaved = attendanceRepository.saveCheckIn(checkInCreationRequest);
+        return isSaved ? "Check In Successful, Thankyou !" : "You Are Allready Checked In !";
     }
 
     @Override
     @Transactional
-    public Boolean saveCheckOut(CheckOutCreationRequest checkOutCreationRequest) {
+    public String saveCheckOut(CheckOutCreationRequest checkOutCreationRequest) {
 
-        if (LocalTime.now().isBefore(LocalTime.of(13,30))){
-            attendanceRepository.saveCheckOut(checkOutCreationRequest);
-            attendanceRepository.setStatusForHalfday(employeeRepository.getUser(checkOutCreationRequest.getUserName()).getEmployeeId());
-            return true;
+        if(!attendanceRepository.isCheckedIn(checkOutCreationRequest.getUserName())){
+            return "You're Not Checked In yet !";
         }
-        return attendanceRepository.saveCheckOut(checkOutCreationRequest);
+
+        if (LocalTime.now().isBefore(LocalTime.of(13,0))){
+            return "You Cant Check Out Early ! (Before 1:00 pm)";
+        }
+
+        if (LocalTime.now().isAfter(LocalTime.of(13,0)) && LocalTime.now().isBefore(LocalTime.of(17,0))){
+            Boolean isSaved = attendanceRepository.saveCheckOut(checkOutCreationRequest);
+            attendanceRepository.setStatusForHalfday(employeeRepository.getUser(checkOutCreationRequest.getUserName()).getEmployeeId());
+            return isSaved ? "Check Out Successful, Thankyou !" : "You Are Allready Checked Out !";
+        }
+
+        Boolean isSaved = attendanceRepository.saveCheckOut(checkOutCreationRequest);
+        return isSaved ? "Check Out Successful, Thankyou !" : "You Are Allready Checked Out !";
     }
 
     @Override
@@ -93,5 +117,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public void insertEmployeeIdsToAttendance(List<Long> employeeIdList) {
         attendanceRepository.insertEmployeeIdsToAttendance(employeeIdList);
+    }
+
+    @Override
+    public TodayAttendance getTodayAttDetails(String userName) {
+        return attendanceRepository.getTodayAttDetails(userName);
     }
 }

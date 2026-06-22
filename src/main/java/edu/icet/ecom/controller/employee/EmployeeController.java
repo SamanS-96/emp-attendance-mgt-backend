@@ -23,6 +23,11 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
 
+    @GetMapping("/get-count")
+    Integer getEmployeeCount(){
+        return employeeService.getEmployeeCount();
+    }
+
     @GetMapping("/get/{id}")
     EmployeeResponse getEmployee(@PathVariable Long id){
         return employeeService.getEmployeeById(id);
