@@ -8,6 +8,5 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class CheckInCreationRequest {
-    private Long employeeId;
-    private LocalDateTime checkInTime;
+    private String userName;
 }

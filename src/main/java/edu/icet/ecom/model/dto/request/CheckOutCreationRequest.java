@@ -8,6 +8,5 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class CheckOutCreationRequest {
-    private Long employeeId;
-    private LocalDateTime checkOutTime;
+    private String userName;
 }

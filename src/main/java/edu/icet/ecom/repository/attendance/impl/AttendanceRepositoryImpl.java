@@ -3,7 +3,6 @@ package edu.icet.ecom.repository.attendance.impl;
 import edu.icet.ecom.entity.Attendance;
 import edu.icet.ecom.model.dto.request.CheckInCreationRequest;
 import edu.icet.ecom.model.dto.request.CheckOutCreationRequest;
-import edu.icet.ecom.model.dto.response.AttendanceResponse;
 import edu.icet.ecom.repository.attendance.AttendanceRepository;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -24,11 +24,10 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
     @Override
     public Boolean saveCheckIn(CheckInCreationRequest checkInCreationRequest) {
-        template.update("INSERT INTO attendance(employee_id, attendance_date, check_in_time, status) VALUES (?, ?, ?, ?)",
-                checkInCreationRequest.getEmployeeId(),
-                checkInCreationRequest.getCheckInTime().toLocalDate(),
-                checkInCreationRequest.getCheckInTime(),
-                checkInCreationRequest.getCheckInTime().toLocalTime().isBefore(LocalTime.of(8,30)) ? "PRESENT" : "LATE"
+        template.update("UPDATE attendance SET check_in_time = ?, status = ? WHERE employee_id = ? AND attendance_date = CURDATE()",
+                LocalDateTime.now(),
+                LocalTime.now().isBefore(LocalTime.of(8,30)) ? "PRESENT" : "LATE",
+                employeeRepository.getUser(checkInCreationRequest.getUserName()).getEmployeeId()
                 );
         return true;
     }
@@ -36,9 +35,9 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
     @Override
     public Boolean saveCheckOut(CheckOutCreationRequest checkOutCreationRequest) {
         template.update("UPDATE attendance SET check_out_time = ?, working_hours = ? WHERE employee_id = ? AND attendance_date = CURDATE()",
-                checkOutCreationRequest.getCheckOutTime(),
-                Duration.between(getAttendanceDetails(checkOutCreationRequest.getEmployeeId()).getCheckInTime().toLocalTime(), checkOutCreationRequest.getCheckOutTime().toLocalTime()).toMinutes()/60.0,
-                checkOutCreationRequest.getEmployeeId()
+                LocalDateTime.now(),
+                Duration.between(getAttendanceDetails(employeeRepository.getUser(checkOutCreationRequest.getUserName()).getEmployeeId()).getCheckInTime().toLocalTime(), LocalTime.now()).toMinutes()/60.0,
+                employeeRepository.getUser(checkOutCreationRequest.getUserName()).getEmployeeId()
                 );
         return true;
     }

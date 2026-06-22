@@ -17,7 +17,7 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
-    @PostMapping("/check-in")
+    @PutMapping("/check-in")
     Boolean saveCheckIn(@RequestBody CheckInCreationRequest checkInCreationRequest){
         return attendanceService.saveCheckIn(checkInCreationRequest);
     }

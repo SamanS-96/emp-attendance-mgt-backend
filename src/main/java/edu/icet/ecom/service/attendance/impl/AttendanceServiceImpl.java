@@ -4,7 +4,6 @@ import edu.icet.ecom.entity.Attendance;
 import edu.icet.ecom.model.dto.request.CheckInCreationRequest;
 import edu.icet.ecom.model.dto.request.CheckOutCreationRequest;
 import edu.icet.ecom.model.dto.response.AttendanceResponse;
-import edu.icet.ecom.model.dto.response.EmployeeResponse;
 import edu.icet.ecom.repository.attendance.AttendanceRepository;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import edu.icet.ecom.service.attendance.AttendanceService;
@@ -27,9 +26,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Transactional
     public Boolean saveCheckIn(CheckInCreationRequest checkInCreationRequest) {
 
-        if (checkInCreationRequest.getCheckInTime().toLocalTime().isAfter(LocalTime.of(12,30))){
+        if (LocalTime.now().isAfter(LocalTime.of(12,30))){
             attendanceRepository.saveCheckIn(checkInCreationRequest);
-            attendanceRepository.setStatusForHalfday(checkInCreationRequest.getEmployeeId());
+            attendanceRepository.setStatusForHalfday(employeeRepository.getUser(checkInCreationRequest.getUserName()).getEmployeeId());
             return true;
         }
         return attendanceRepository.saveCheckIn(checkInCreationRequest);
@@ -39,9 +38,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Transactional
     public Boolean saveCheckOut(CheckOutCreationRequest checkOutCreationRequest) {
 
-        if (checkOutCreationRequest.getCheckOutTime().toLocalTime().isBefore(LocalTime.of(13,30))){
+        if (LocalTime.now().isBefore(LocalTime.of(13,30))){
             attendanceRepository.saveCheckOut(checkOutCreationRequest);
-            attendanceRepository.setStatusForHalfday(checkOutCreationRequest.getEmployeeId());
+            attendanceRepository.setStatusForHalfday(employeeRepository.getUser(checkOutCreationRequest.getUserName()).getEmployeeId());
             return true;
         }
         return attendanceRepository.saveCheckOut(checkOutCreationRequest);
