@@ -16,4 +16,8 @@ public interface LeaveService {
     LeaveResponse geById(Long id);
 
     List<LeaveResponse> getAllLeavesByUserName(String userName);
+
+    Boolean approveLeaveReq(Long id);
+
+    Boolean rejectLeaveReq(Long id);
 }

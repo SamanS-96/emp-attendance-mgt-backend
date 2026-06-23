@@ -76,4 +76,14 @@ public class LeaveServiceImpl implements LeaveService {
         });
         return leaveResponseList;
     }
+
+    @Override
+    public Boolean approveLeaveReq(Long id) {
+        return leaveRepository.approveLeaveReq(id);
+    }
+
+    @Override
+    public Boolean rejectLeaveReq(Long id) {
+        return leaveRepository.rejectLeaveReq(id);
+    }
 }

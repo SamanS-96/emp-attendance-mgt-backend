@@ -42,4 +42,14 @@ public class LeaveController {
     List<LeaveResponse> getAllByUserName(@RequestParam String userName){
         return leaveService.getAllLeavesByUserName(userName);
     }
+
+    @PutMapping("/leave-request/approve/{id}")
+    Boolean approveLeaveReq(@PathVariable Long id){
+        return leaveService.approveLeaveReq(id);
+    }
+
+    @PutMapping("/leave-request/reject/{id}")
+    Boolean rejectLeaveReq(@PathVariable Long id){
+        return leaveService.rejectLeaveReq(id);
+    }
 }

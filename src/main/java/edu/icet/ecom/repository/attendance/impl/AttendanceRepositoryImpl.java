@@ -1,6 +1,7 @@
 package edu.icet.ecom.repository.attendance.impl;
 
 import edu.icet.ecom.entity.Attendance;
+import edu.icet.ecom.entity.User;
 import edu.icet.ecom.model.dto.request.CheckInCreationRequest;
 import edu.icet.ecom.model.dto.request.CheckOutCreationRequest;
 import edu.icet.ecom.model.dto.response.TodayAttendance;
@@ -67,14 +68,23 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
     @Override
     public List<Attendance> getAllAttendance() {
-        return template.query("SELECT * FROM attendance", new BeanPropertyRowMapper<>(Attendance.class));
+        return template.query("SELECT * FROM attendance ORDER BY id DESC", new BeanPropertyRowMapper<>(Attendance.class));
     }
 
     @Override
     public List<Attendance> getAllAttendanceByUserName(String userName) {
-        return template.query("SELECT * FROM attendance WHERE employee_id = ?", new BeanPropertyRowMapper<>(Attendance.class),
-                employeeRepository.getUser(userName).getEmployeeId()
-                );
+
+        User user = employeeRepository.getUser(userName);
+
+        if (user == null) {
+            throw new RuntimeException("User not found : " + userName);
+        }
+
+        return template.query(
+                "SELECT * FROM attendance WHERE employee_id = ? ORDER BY attendance_date DESC",
+                new BeanPropertyRowMapper<>(Attendance.class),
+                user.getEmployeeId()
+        );
     }
 
     @Override
@@ -110,8 +120,8 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
     @Override
     public TodayAttendance getTodayAttDetails(String userName) {
-        Integer presentCount = template.queryForObject("SELECT COUNT(*) FROM attendance WHERE status = 'PRESENT' OR status = 'HALF_DAY'", Integer.class);
-        Integer absentCount = template.queryForObject("SELECT COUNT(*) FROM attendance WHERE status = 'ABSENT'", Integer.class);
+        Integer presentCount = template.queryForObject("SELECT COUNT(*) FROM attendance WHERE (status = 'PRESENT' OR status = 'HALF_DAY' OR status = 'LATE') AND attendance_date = CURDATE()", Integer.class);
+        Integer absentCount = template.queryForObject("SELECT COUNT(*) FROM attendance WHERE (status = 'ABSENT' OR status IS NULL) AND attendance_date = CURDATE()", Integer.class);
         String myStatus = template.queryForObject("SELECT status  FROM attendance WHERE employee_id = ? AND attendance_date = CURDATE()",
                 String.class,
                 employeeRepository.getUser(userName).getEmployeeId()

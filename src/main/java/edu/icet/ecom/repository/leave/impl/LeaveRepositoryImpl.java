@@ -45,7 +45,7 @@ public class LeaveRepositoryImpl implements LeaveRepository {
 
     @Override
     public List<Leave> getAll() {
-        return template.query("SELECT*FROM leave_requests", new BeanPropertyRowMapper<>(Leave.class));
+        return template.query("SELECT*FROM leave_requests ORDER BY id DESC", new BeanPropertyRowMapper<>(Leave.class));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class LeaveRepositoryImpl implements LeaveRepository {
 
     @Override
     public List<Leave> getAllLeavesByUserName(String userName) {
-        return template.query("SELECT*FROM leave_requests WHERE employee_id = ?", new BeanPropertyRowMapper<>(Leave.class),
+        return template.query("SELECT*FROM leave_requests WHERE employee_id = ? ORDER BY id DESC", new BeanPropertyRowMapper<>(Leave.class),
                 employeeRepository.getUser(userName).getEmployeeId()
                 );
     }
@@ -71,5 +71,17 @@ public class LeaveRepositoryImpl implements LeaveRepository {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Boolean approveLeaveReq(Long id) {
+        template.update("UPDATE leave_requests SET status = 'APPROVED' WHERE id = ?", id);
+        return true;
+    }
+
+    @Override
+    public Boolean rejectLeaveReq(Long id) {
+        template.update("UPDATE leave_requests SET status = 'REJECTED' WHERE id = ?", id);
+        return true;
     }
 }

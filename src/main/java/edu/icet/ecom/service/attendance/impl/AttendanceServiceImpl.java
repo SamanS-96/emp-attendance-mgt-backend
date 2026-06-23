@@ -38,7 +38,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             return isCheckedIn ? "You Are Allready Checked In !" : "You Can't Check In After 1:00 pm !";
         }
 
-        if (LocalTime.now().isAfter(LocalTime.of(8,30)) && LocalTime.now().isBefore(LocalTime.of(13,0))){
+        if (LocalTime.now().isAfter(LocalTime.of(9,30)) && LocalTime.now().isBefore(LocalTime.of(13,0))){
             Boolean isSaved = attendanceRepository.saveCheckIn(checkInCreationRequest);
             attendanceRepository.setStatusForHalfday(employeeRepository.getUser(checkInCreationRequest.getUserName()).getEmployeeId());
             return isSaved ? "Check In Successful, Thankyou !" : "You Are Allready Checked In !";

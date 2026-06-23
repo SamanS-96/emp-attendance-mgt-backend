@@ -17,4 +17,8 @@ public interface LeaveRepository {
     List<Leave> getAllLeavesByUserName(String userName);
 
     boolean isOnLeaveToday(Long employeeId);
+
+    Boolean approveLeaveReq(Long id);
+
+    Boolean rejectLeaveReq(Long id);
 }
