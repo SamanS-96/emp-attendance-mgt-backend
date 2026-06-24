@@ -3,7 +3,6 @@ package edu.icet.ecom.repository.leave.impl;
 import edu.icet.ecom.entity.Leave;
 import edu.icet.ecom.model.dto.request.LeaveRequest;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
-import edu.icet.ecom.repository.employee.impl.EmployeeRepositoryImpl;
 import edu.icet.ecom.repository.leave.LeaveRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -22,6 +21,10 @@ public class LeaveRepositoryImpl implements LeaveRepository {
     @Override
     public Boolean createLeave(LeaveRequest leaveRequest) {
 
+        if (isHaveActiveLeave(leaveRequest)){
+            return false;
+        }
+
         template.update("INSERT INTO leave_requests(employee_id, from_date, to_date, reason) VALUES (?, ?, ?, ?)",
                 employeeRepository.getUser(leaveRequest.getUserName()).getEmployeeId(),
                 leaveRequest.getFromDate(),
@@ -31,8 +34,28 @@ public class LeaveRepositoryImpl implements LeaveRepository {
         return true;
     }
 
+    private boolean isHaveActiveLeave(LeaveRequest leaveRequest) {
+        Integer count = template.queryForObject(
+                "SELECT COUNT(*) FROM leave_requests WHERE employee_id = ? AND (status = 'APPROVED' OR status = 'PENDING') " +
+                        "AND ? <= to_date AND ? >= from_date",
+                Integer.class,
+                employeeRepository.getUser(leaveRequest.getUserName()).getEmployeeId(),
+                leaveRequest.getFromDate(),
+                leaveRequest.getToDate()
+        );
+        if (count > 0){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Boolean updateLeave(Long id, LeaveRequest leaveRequest) {
+
+        if (isHaveActiveLeave(leaveRequest, id)){
+            return false;
+        }
+
         template.update("UPDATE leave_requests SET employee_id = ?, from_date = ?, to_date = ?, reason = ? WHERE id = ?",
                 employeeRepository.getUser(leaveRequest.getUserName()).getEmployeeId(),
                 leaveRequest.getFromDate(),
@@ -41,6 +64,24 @@ public class LeaveRepositoryImpl implements LeaveRepository {
                 id
                 );
         return true;
+    }
+
+    private boolean isHaveActiveLeave(LeaveRequest leaveRequest, Long id) {
+        Integer count = template.queryForObject(
+                "SELECT COUNT(*) FROM leave_requests WHERE employee_id = ? " +
+                        "AND id <> ? " +
+                        "AND (status = 'APPROVED' OR status = 'PENDING') " +
+                        "AND ? <= to_date AND ? >= from_date",
+                Integer.class,
+                employeeRepository.getUser(leaveRequest.getUserName()).getEmployeeId(),
+                id,
+                leaveRequest.getFromDate(),
+                leaveRequest.getToDate()
+        );
+        if (count > 0){
+            return true;
+        }
+        return false;
     }
 
     @Override

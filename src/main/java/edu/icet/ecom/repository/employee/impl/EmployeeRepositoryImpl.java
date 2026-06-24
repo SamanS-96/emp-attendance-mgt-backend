@@ -3,6 +3,7 @@ package edu.icet.ecom.repository.employee.impl;
 import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
 import edu.icet.ecom.entity.Employee;
 import edu.icet.ecom.entity.User;
+import edu.icet.ecom.repository.department.DepartmentRepository;
 import edu.icet.ecom.repository.employee.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -22,6 +23,7 @@ import java.util.List;
 public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     private final JdbcTemplate template;
+    private final DepartmentRepository departmentRepository;
 
     @Override
     public List<Employee> getAllEmployees() {
@@ -37,6 +39,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public Employee saveEmployee(EmployeeCreationRequest employeeCreationRequest) {
+
+        if (isExist(employeeCreationRequest) != null){
+            return null;
+        }
+
         String sql = "INSERT INTO employees (employee_code, first_name, last_name, email, phone, join_date, department_id)" +
                 "VALUES" +
                 "(?, ?, ?, ?, ?, ?, ?)";
@@ -45,34 +52,54 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        template.update(connection ->{
-            PreparedStatement psTm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            psTm.setString(1,lastEmpCode == null ? "EMP001" : String.format("EMP%03d", Integer.parseInt(lastEmpCode.substring(3)) + 1));
-            psTm.setString(2,employeeCreationRequest.getFirstName());
-            psTm.setString(3,employeeCreationRequest.getLastName());
-            psTm.setString(4,employeeCreationRequest.getEmail());
-            psTm.setString(5,employeeCreationRequest.getPhone());
-            psTm.setObject(6,LocalDate.now());
-            psTm.setLong(7,employeeCreationRequest.getDepartmentId());
-            return psTm;
-        }, keyHolder);
-        generatedEmpId = keyHolder.getKey().longValue();
-        return getEmployeeById(generatedEmpId);
+        try {
+            template.update(connection -> {
+                PreparedStatement psTm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                psTm.setString(1, lastEmpCode == null ? "EMP001" : String.format("EMP%03d", Integer.parseInt(lastEmpCode.substring(3)) + 1));
+                psTm.setString(2, employeeCreationRequest.getFirstName());
+                psTm.setString(3, employeeCreationRequest.getLastName());
+                psTm.setString(4, employeeCreationRequest.getEmail());
+                psTm.setString(5, employeeCreationRequest.getPhone());
+                psTm.setObject(6, LocalDate.now());
+                psTm.setLong(7, departmentRepository.searhDepartmentByName(employeeCreationRequest.getDepartmentName()).getId());
+                return psTm;
+            }, keyHolder);
+            generatedEmpId = keyHolder.getKey().longValue();
+            return getEmployeeById(generatedEmpId);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Employee isExist(EmployeeCreationRequest employeeCreationRequest) {
+        try {
+            return template.queryForObject(
+                    "SELECT * FROM employees WHERE email = ? AND is_Active =TRUE",
+                    new BeanPropertyRowMapper<>(Employee.class),
+                    employeeCreationRequest.getEmail()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
     public Employee updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest) {
         String sql = "UPDATE employees SET first_name = ?, last_name = ?, email = ?, phone = ?, department_id = ? WHERE id  = ?";
 
-        template.update(sql,
-                employeeCreationRequest.getFirstName(),
-                employeeCreationRequest.getLastName(),
-                employeeCreationRequest.getEmail(),
-                employeeCreationRequest.getPhone(),
-                employeeCreationRequest.getDepartmentId(),
-                id
-        );
-        return getEmployeeById(id);
+        try {
+            template.update(sql,
+                    employeeCreationRequest.getFirstName(),
+                    employeeCreationRequest.getLastName(),
+                    employeeCreationRequest.getEmail(),
+                    employeeCreationRequest.getPhone(),
+                    departmentRepository.searhDepartmentByName(employeeCreationRequest.getDepartmentName()).getId(),
+                    id
+            );
+            return getEmployeeById(id);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

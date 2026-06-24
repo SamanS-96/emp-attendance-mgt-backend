@@ -120,13 +120,17 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
     @Override
     public TodayAttendance getTodayAttDetails(String userName) {
-        Integer presentCount = template.queryForObject("SELECT COUNT(*) FROM attendance WHERE (status = 'PRESENT' OR status = 'HALF_DAY' OR status = 'LATE') AND attendance_date = CURDATE()", Integer.class);
-        Integer absentCount = template.queryForObject("SELECT COUNT(*) FROM attendance WHERE (status = 'ABSENT' OR status IS NULL) AND attendance_date = CURDATE()", Integer.class);
-        String myStatus = template.queryForObject("SELECT status  FROM attendance WHERE employee_id = ? AND attendance_date = CURDATE()",
-                String.class,
-                employeeRepository.getUser(userName).getEmployeeId()
-                );
-        return new TodayAttendance(presentCount, absentCount, myStatus);
+        try {
+            Integer presentCount = template.queryForObject("SELECT COUNT(*) FROM attendance WHERE (status = 'PRESENT' OR status = 'HALF_DAY' OR status = 'LATE') AND attendance_date = CURDATE()", Integer.class);
+            Integer absentCount = template.queryForObject("SELECT COUNT(*) FROM attendance WHERE (status = 'ABSENT' OR status IS NULL) AND attendance_date = CURDATE()", Integer.class);
+            String myStatus = template.queryForObject("SELECT status  FROM attendance WHERE employee_id = ? AND attendance_date = CURDATE()",
+                    String.class,
+                    employeeRepository.getUser(userName).getEmployeeId()
+            );
+            return new TodayAttendance(presentCount, absentCount, myStatus);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private Attendance getAttendanceDetails(Long employeeId) {

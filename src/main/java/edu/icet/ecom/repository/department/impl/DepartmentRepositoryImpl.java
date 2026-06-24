@@ -1,9 +1,13 @@
 package edu.icet.ecom.repository.department.impl;
 
+import edu.icet.ecom.entity.Employee;
+import edu.icet.ecom.entity.User;
 import edu.icet.ecom.model.dto.request.DepartmentCreationRequest;
 import edu.icet.ecom.entity.Department;
+import edu.icet.ecom.model.dto.request.EmployeeCreationRequest;
 import edu.icet.ecom.repository.department.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -32,6 +36,11 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
 
     @Override
     public Department saveDepartment(DepartmentCreationRequest departmentCreationRequest) {
+
+        if (isExist(departmentCreationRequest) != null){
+            return null;
+        }
+
         String sql = "INSERT INTO departments (name, description)" +
                 "VALUES" +
                 "(?, ?)";
@@ -47,16 +56,41 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
         return searhDepartmentById(keyHolder.getKey().longValue());
     }
 
+    private Department isExist(DepartmentCreationRequest departmentCreationRequest) {
+        try {
+            return template.queryForObject(
+                    "SELECT * FROM departments WHERE name = ?",
+                    new BeanPropertyRowMapper<>(Department.class),
+                    departmentCreationRequest.getName()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
     @Override
     public Department updateDepartment(Long id, DepartmentCreationRequest departmentCreationRequest) {
         String sql = "UPDATE departments SET name = ?, description = ? WHERE id = ?";
 
-        template.update(sql,
-                departmentCreationRequest.getName(),
-                departmentCreationRequest.getDescription(),
-                id
-        );
-        return searhDepartmentById(id);
+        try {
+            template.update(sql,
+                    departmentCreationRequest.getName(),
+                    departmentCreationRequest.getDescription(),
+                    id
+            );
+            return searhDepartmentById(id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Department searhDepartmentByName(String departmentName) {
+        try {
+            return template.queryForObject("SELECT * FROM departments WHERE name = ?", new BeanPropertyRowMapper<>(Department.class), departmentName);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
 }

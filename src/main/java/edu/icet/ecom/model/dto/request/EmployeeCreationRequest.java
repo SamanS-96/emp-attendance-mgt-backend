@@ -10,6 +10,6 @@ public class EmployeeCreationRequest {
     private String lastName;
     private String email;
     private String phone;
-    private Long departmentId;
+    private String departmentName;
     private String role;
 }

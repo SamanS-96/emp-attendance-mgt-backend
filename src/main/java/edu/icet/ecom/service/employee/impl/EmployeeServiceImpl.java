@@ -77,6 +77,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponse saveEmployee(EmployeeCreationRequest employeeCreationRequest) {
 
         Employee employee = employeeRepository.saveEmployee(employeeCreationRequest);
+        if (employee == null){
+            return null;
+        }
         User newUser = employeeRepository.createNewUser(employeeCreationRequest);
 
         return new EmployeeResponse(
@@ -102,6 +105,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeResponse updateEmployee(Long id, EmployeeCreationRequest employeeCreationRequest) {
         Employee employee = employeeRepository.updateEmployee(id, employeeCreationRequest);
+        if (employee == null){
+            return null;
+        }
+
         User updatedUser = employeeRepository.updateUser(id, employeeCreationRequest);
 
         return new EmployeeResponse(

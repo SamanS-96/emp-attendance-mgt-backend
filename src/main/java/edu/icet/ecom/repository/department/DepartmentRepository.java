@@ -14,4 +14,5 @@ public interface DepartmentRepository {
 
     Department updateDepartment(Long id, DepartmentCreationRequest departmentCreationRequest);
 
+    Department searhDepartmentByName(String departmentName);
 }

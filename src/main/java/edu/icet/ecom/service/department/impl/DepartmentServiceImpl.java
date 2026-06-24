@@ -44,6 +44,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public DepartmentResponse saveDepartment(DepartmentCreationRequest departmentCreationRequest) {
         Department department = departmentRepository.saveDepartment(departmentCreationRequest);
+        if (department == null){
+            return null;
+        }
+
         return new DepartmentResponse(
                 department.getId(),
                 department.getName(),
@@ -54,6 +58,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public DepartmentResponse updateDepartment(Long id, DepartmentCreationRequest departmentCreationRequest) {
         Department department = departmentRepository.updateDepartment(id, departmentCreationRequest);
+        if (department == null){
+            return null;
+        }
+
         return new DepartmentResponse(
                 department.getId(),
                 department.getName(),
